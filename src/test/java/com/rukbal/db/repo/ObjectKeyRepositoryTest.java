@@ -51,7 +51,8 @@ class ObjectKeyRepositoryTest {
     @Order(value = 1)
     void findByKeyName() {
         ObjectKey objectKey = objectKeyRepository.findByKeyName("FIRST_NAME").block();//Duration.of(1200, ChronoUnit.MILLIS));
-        assertEquals("FIRST_NAME", Objects.requireNonNull(objectKey).getKeyName());
+        Objects.requireNonNull(objectKey);
+        assertEquals("FIRST_NAME", objectKey.keyName());
     }
 
 }
