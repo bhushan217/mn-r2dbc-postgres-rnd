@@ -26,14 +26,14 @@ public class ObjectKeyController {
     }
 
     @Get("/{id}")
-    public Mono<ObjectKey> show(Long id) {
+    public Mono<ObjectKey> show(Integer id) {
         return objectKeyRepository.findById(id);
     }
 
     @Put
     public Mono<Long> update(@Body @Valid ObjectKeyUpdateCommand command) {
         return Mono.just(command)
-                .map(cmd -> new ObjectKey(cmd.id(), cmd.KeyName(), cmd.uiType()))
+                .map(cmd -> new ObjectKey(cmd.id(), cmd.keyName(), cmd.uiType()))
                 .flatMap(objectKeyRepository::update)
                 .onErrorMap( e -> new HttpStatusException(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
@@ -57,7 +57,7 @@ public class ObjectKeyController {
 
     @Delete("/{id}")
 //    @Status(HttpStatus.NO_CONTENT)
-    public @NonNull Mono<Long> delete(Long id) {
+    public @NonNull Mono<Long> delete(Integer id) {
         return objectKeyRepository.deleteById(id);
     }
 
@@ -69,7 +69,7 @@ public class ObjectKeyController {
         return objectKeyRepository.deleteAll();
     }
 
-    protected URI location(Long id) {
+    protected URI location(Integer id) {
         return URI.create("/objectKeys/" + id);
     }
 

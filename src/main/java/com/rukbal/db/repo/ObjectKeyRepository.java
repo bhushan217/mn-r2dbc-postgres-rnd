@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 @R2dbcRepository(dialect = Dialect.POSTGRES)
-public interface ObjectKeyRepository extends ReactorPageableRepository<ObjectKey, Long> {
+public interface ObjectKeyRepository extends ReactorPageableRepository<ObjectKey, Integer> {
 
     Mono<ObjectKey> findByKeyName(@NonNull String keyName);
 

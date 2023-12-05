@@ -24,7 +24,7 @@ class ObjectKeyControllerTest {
         this.objectKeyReactiveClient = objectKeyReactiveClient;
     }
 
-    private static Long savedId = -1L;
+    private static Integer savedId = -1;
 
 
     @DisplayName("List should be empty")
@@ -97,7 +97,7 @@ class ObjectKeyControllerTest {
     @Order(7)
     void saveExceptions() {
         HttpClientResponseException httpClientResponseException = assertThrows(HttpClientResponseException.class,
-                () -> objectKeyReactiveClient.saveExceptions(new ObjectKey(-1L, "null", "null"))
+                () -> objectKeyReactiveClient.saveExceptions(new ObjectKey(-1, "null", "null"))
                         .block());
         String message = httpClientResponseException.getMessage();
         assertNotNull(message);

@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 public interface ObjectKeyReactiveClient {
 
     @Get("/{id}")
-    Mono<ObjectKey> show(Long id);
+    Mono<ObjectKey> show(Integer id);
     @Put
     Mono<Long> update(@Body @Valid ObjectKeyUpdateCommand command);
     @Get("/list")
@@ -28,7 +28,7 @@ public interface ObjectKeyReactiveClient {
 
     @Delete("/{id}")
 //    @Status(HttpStatus.NO_CONTENT)
-    @NonNull Mono<Long> delete(Long id);
+    @NonNull Mono<Long> delete(Integer id);
 
     @Delete
 //    @Status(HttpStatus.NO_CONTENT)

@@ -13,8 +13,10 @@ import jakarta.validation.constraints.NotBlank;
 @MappedEntity("object_key")
 public record ObjectKey(
         @Id
-        @GeneratedValue
-        Long id,
+//        @AutoPopulated
+        @GeneratedValue(value = GeneratedValue.Type.SEQUENCE, ref = "object_key_seq")
+//                @ColumnTransformer("")
+        Integer id,
 
         @NotBlank
         String keyName,

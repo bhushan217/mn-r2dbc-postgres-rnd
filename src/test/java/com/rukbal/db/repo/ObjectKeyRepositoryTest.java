@@ -22,12 +22,12 @@ class ObjectKeyRepositoryTest {
     }
 
     java.util.List<ObjectKey> objectKeys = Arrays.asList(
-            new ObjectKey(1L, "FIRST_NAME", "text"),
-            new ObjectKey(2L, "LAST_NAME", "text"),
-            new ObjectKey(3L, "MIDDLE_NAME", "text"),
-            new ObjectKey(4L, "PREFIX_NAME", "text"),
-            new ObjectKey(5L, "DATE_OF_BIRTH", "date"),
-            new ObjectKey(6L, "DATE_OF_JOIN", "date"));
+            new ObjectKey(1, "FIRST_NAME", "text"),
+            new ObjectKey(2, "LAST_NAME", "text"),
+            new ObjectKey(3, "MIDDLE_NAME", "text"),
+            new ObjectKey(4, "PREFIX_NAME", "text"),
+            new ObjectKey(5, "DATE_OF_BIRTH", "date"),
+            new ObjectKey(6, "DATE_OF_JOIN", "date"));
     @BeforeEach
     void setUp() {
         objectKeyRepository.deleteAll().block();
