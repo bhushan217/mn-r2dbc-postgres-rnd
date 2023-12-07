@@ -1,6 +1,8 @@
 package com.rukbal.db.repo;
 
-import com.rukbal.db.dto.ObjectKey;
+import com.rukbal.db.domain.ObjectKey;
+import com.rukbal.db.domain.UiType;
+import com.rukbal.db.repository.ObjectKeyRepository;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.*;
 import reactor.core.publisher.Mono;
@@ -20,14 +22,14 @@ class ObjectKeyRepositoryTest {
     ObjectKeyRepositoryTest(ObjectKeyRepository objectKeyRepository) {
         this.objectKeyRepository = objectKeyRepository;
     }
-
+    UiType uiTypeText = new UiType(1, "text", null);
     java.util.List<ObjectKey> objectKeys = Arrays.asList(
-            new ObjectKey(1, "FIRST_NAME", "text"),
-            new ObjectKey(2, "LAST_NAME", "text"),
-            new ObjectKey(3, "MIDDLE_NAME", "text"),
-            new ObjectKey(4, "PREFIX_NAME", "text"),
-            new ObjectKey(5, "DATE_OF_BIRTH", "date"),
-            new ObjectKey(6, "DATE_OF_JOIN", "date"));
+            new ObjectKey(1, "FIRST_NAME", uiTypeText),
+            new ObjectKey(2, "LAST_NAME", uiTypeText),
+            new ObjectKey(3, "MIDDLE_NAME", uiTypeText),
+            new ObjectKey(4, "PREFIX_NAME", uiTypeText),
+            new ObjectKey(5, "DATE_OF_BIRTH", uiTypeText),
+            new ObjectKey(6, "DATE_OF_JOIN", uiTypeText));
     @BeforeEach
     void setUp() {
         objectKeyRepository.deleteAll().block();
