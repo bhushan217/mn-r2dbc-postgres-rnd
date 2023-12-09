@@ -13,7 +13,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(startApplication = false)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestClassOrder(ClassOrderer.class)
 class ObjectKeyRepositoryTest {
 
@@ -22,7 +22,8 @@ class ObjectKeyRepositoryTest {
     ObjectKeyRepositoryTest(ObjectKeyRepository objectKeyRepository) {
         this.objectKeyRepository = objectKeyRepository;
     }
-    UiType uiTypeText = new UiType(1, "text", null);
+
+    UiType uiTypeText = new UiType((short) 1, "text", null);
     java.util.List<ObjectKey> objectKeys = Arrays.asList(
             new ObjectKey(1, "FIRST_NAME", uiTypeText),
             new ObjectKey(2, "LAST_NAME", uiTypeText),

@@ -31,4 +31,5 @@ public record ObjectKey(
         @Relation(Relation.Kind.ONE_TO_ONE)
         @JoinColumn(name = "ui_type_id")
         UiType uiType
-) {}
+) implements BaseRecord<Integer> {
+}

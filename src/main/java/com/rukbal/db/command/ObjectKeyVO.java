@@ -1,5 +1,6 @@
 package com.rukbal.db.command;
 
+import com.rukbal.db.domain.BaseRecord;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.validation.constraints.NotBlank;
@@ -7,14 +8,14 @@ import jakarta.validation.constraints.NotNull;
 
 @Serdeable
 public record ObjectKeyVO(
-    @Nullable
+        @Nullable
     Integer id,
 
-    @NotBlank
+        @NotBlank
     String keyName,
 
-    @NotNull
-    Integer uiTypeId
-) {
+        @NotNull
+        Short uiTypeId
+) implements BaseRecord<Integer> {
 
 }

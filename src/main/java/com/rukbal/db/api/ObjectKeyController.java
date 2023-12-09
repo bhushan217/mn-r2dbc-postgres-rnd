@@ -1,8 +1,8 @@
 package com.rukbal.db.api;
 
+import com.rukbal.db.aapi.IBaseApi;
 import com.rukbal.db.command.ObjectKeyVO;
 import com.rukbal.db.domain.ObjectKey;
-import com.rukbal.db.domain.UiType;
 import com.rukbal.db.repository.ObjectKeyRepository;
 import com.rukbal.db.repository.UiTypeRepository;
 import io.micronaut.core.annotation.NonNull;
@@ -10,39 +10,41 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.exceptions.DataAccessException;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
-import io.micronaut.http.HttpStatus;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
-import io.micronaut.problem.HttpStatusType;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
-import io.micronaut.transaction.annotation.Transactional;
 import io.micronaut.validation.Validated;
 import jakarta.validation.Valid;
-import org.zalando.problem.Problem;
-import org.zalando.problem.ThrowableProblem;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
 
 import static io.micronaut.http.MediaType.APPLICATION_JSON;
 
-@Controller("/objectKeys")
+@Controller(ObjectKeyController.BASE_PATH)
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @ExecuteOn(TaskExecutors.IO)
 @Validated
-@Transactional
-public class ObjectKeyController {
+//@Transactional // commented due to browser blocking
+public class ObjectKeyController implements IBaseApi<ObjectKeyVO, Integer, ObjectKey> {
 
+    public static final String BASE_PATH = "/objectKeys";
+    public static final String BASE_TITLE = "Object Keys";
     protected final ObjectKeyRepository objectKeyRepository;
     protected final UiTypeRepository uiTypeRepository;
 
+    //    public String getBasePath(){
+//        return BASE_PATH;
+//    }
+    public String getBaseTitle() {
+        return BASE_TITLE;
+    }
     public ObjectKeyController(ObjectKeyRepository objectKeyRepository, UiTypeRepository uiTypeRepository) {
         this.objectKeyRepository = objectKeyRepository;
         this.uiTypeRepository = uiTypeRepository;
     }
 
-    @Get("/{id}")
+    //    @Get("/{id}")
     public Mono<ObjectKeyVO> show(@NonNull Integer id) {
         return objectKeyRepository.findById(id).map(this::toVO);
     }
@@ -52,78 +54,59 @@ public class ObjectKeyController {
         return Mono.just(objectKeyVO)
                 .map(this::toEntity)
                 .flatMap(objectKeyRepository::update)
-                .map(this::toVO)
-                .onErrorMap(ObjectKeyController::buildProblemStatement);
+                .onErrorMap(this::buildProblemStatement)
+                .map(this::toVO);
     }
 
     @Get("/list")
-    public @NonNull Mono<Page<ObjectKeyVO>> listPage(@Nullable Pageable pageable) {
-        return objectKeyRepository.findAll(pageable==null?Pageable.UNPAGED:pageable)
-                .map(page -> page.map(this::toVO));
+    public Mono<Page<ObjectKeyVO>> listPage(@Nullable Pageable pageable) {
+        return objectKeyRepository.listAll(pageable).map(page -> page.map(this::toVO));
+//        return Mono.just(pageable)
+//                .flatMap(objectKeyRepository::findAll)
+//                .map(page -> page.map(this::toVO));
     }
 
     @Post
-    public Mono<ObjectKeyVO> save(@Body @Valid ObjectKeyVO objectKeyVO) {
+    public Mono<HttpResponse<ObjectKeyVO>> save(@Body @Valid ObjectKeyVO objectKeyVO) {
         return Mono.just(objectKeyVO)
                 .map(this::toEntity)
                 .flatMap(objectKeyRepository::saveElseThrowException)
                 .map(this::toVO)
-                .onErrorMap(ObjectKeyController::buildProblemStatement);
+                .onErrorMap(this::buildProblemStatement)
+                .map(this::createdHeadersWithId);
     }
 
-//    @Post("/ex")
-//    public Mono<ObjectKeyVO> saveExceptions(@Body @Valid ObjectKeyVO objectKeyVO) throws HttpStatusException {
-//        return Mono.just(objectKeyVO)
-//                .map(this::toEntity)
-//                .flatMap(objectKeyRepository::saveElseThrowException)
-//                .map(this::toVO)
-//                .onErrorMap(ObjectKeyController::buildProblemStatement);//.onErrorMap( e -> e);
-//    }
-
     @Delete("/{id}")
-    public @NonNull Mono<Long> delete(Integer id) {
-        return objectKeyRepository.deleteById(id);
+    public @NonNull Mono<Integer> delete(Integer id) {
+        return Mono.just(id)
+                .flatMap(objectKeyRepository::deleteById)
+                .map(Math::toIntExact)
+                .onErrorMap(this::buildProblemStatement);
     }
 
 
 
     @Delete
-    Mono<Long> deleteAll(){
-        return objectKeyRepository.deleteAll();
+    public Mono<Integer> deleteAll() {
+        return objectKeyRepository.deleteAll()
+                .map(Math::toIntExact)
+                .onErrorMap(this::buildProblemStatement);
     }
 
 
     ///////////////////
     //      UTILS
     ///////////////////
-    protected URI location(Integer id) {
-        return URI.create("/objectKeys/" + id);
-    }
 
-    protected URI location(ObjectKey objectKey) {
-        return location(objectKey.id());
-    }
-
-
-    private static ThrowableProblem buildProblemStatement(Throwable e) {
-        return Problem.builder()
-                .withType(URI.create("/objectKeys"))
-                .withTitle("OBJECT_KEYS")
-                .withStatus(new HttpStatusType(HttpStatus.EXPECTATION_FAILED))
-                .withDetail(e.getMessage())
-//                .with("product", "B00027Y5QG")
-                .build();
-    }
-
-    private ObjectKey toEntity(ObjectKeyVO cmd) throws DataAccessException {
-        UiType uiType = uiTypeRepository.findById(cmd.uiTypeId()).block();
+    public ObjectKey toEntity(ObjectKeyVO vo) throws DataAccessException {
+        var uiType = uiTypeRepository.findById(vo.uiTypeId()).block();
         if(uiType==null){
-            throw new DataAccessException("Invalid UI Type - [id: "+cmd.uiTypeId()+"]");
+            throw new DataAccessException("Invalid UI Type - [id: " + vo.uiTypeId() + "]");
         }
-        return new ObjectKey(cmd.id(), cmd.keyName(), uiType);
+        return new ObjectKey(vo.id(), vo.keyName(), uiType);
     }
 
-    private ObjectKeyVO toVO(ObjectKey ok) {
+    public ObjectKeyVO toVO(ObjectKey ok) {
         return new ObjectKeyVO(ok.id(), ok.keyName(), ok.uiType().id());
     }
 

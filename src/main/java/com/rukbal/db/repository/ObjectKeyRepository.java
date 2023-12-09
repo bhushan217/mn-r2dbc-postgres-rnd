@@ -13,25 +13,25 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 @R2dbcRepository(dialect = Dialect.POSTGRES)
+@Join(value = "uiType", alias = "ut")
 public interface ObjectKeyRepository extends ReactorPageableRepository<ObjectKey, Integer> {
 
-    @Join(value = "uiType",alias = "ut")
+    //    @Join(value = "uiType",alias = "ut")
     @NonNull
-    Mono<Page<ObjectKey>> findAll(@NonNull Pageable pageable);
+    Mono<Page<ObjectKey>> listAll(@NonNull Pageable pageable);
 
-    @Join(value = "uiType",alias = "ut")
-    @Override
-    @NonNull
-    Mono<ObjectKey> findById(@NonNull Integer id);
+//    @Join(value = "uiType",alias = "ut")
+//    @Override
+//    @NonNull
+//    Mono<ObjectKey> findById(@NonNull Integer id);
 
     Mono<ObjectKey> findByKeyName(@NonNull String keyName);
 
-    @Join(value = "uiType",alias = "ut")
+    //    @Join(value = "uiType",alias = "ut")
     @NonNull
     @Transactional
     default Mono<ObjectKey> saveElseThrowException(@NonNull ObjectKey objectKey) {
         return save(objectKey).onErrorMap(Exception.class, e -> e.getMessage().contains("_UK") ? new DataAccessException("Record "+objectKey.keyName()+" already exists") : new RuntimeException(e.getMessage()));
     }
 
-    Mono<ObjectKey> update(@NonNull ObjectKey oObjectKey);
 }

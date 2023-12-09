@@ -15,7 +15,7 @@ public record UiType(
 
     @Id @Nullable
     @GeneratedValue(value = GeneratedValue.Type.SEQUENCE)
-    Integer id,
+    Short id,
 
     @NonNull @NotBlank
     @Size(min = 5)
@@ -25,5 +25,5 @@ public record UiType(
     @Nullable
     @Relation(value = Relation.Kind.ONE_TO_MANY, mappedBy = "uiType"/*, cascade = {Relation.Cascade.UPDATE}*/)
     Set<ObjectKey> objectKeys
-){
+) implements BaseRecord<Short> {
 }
