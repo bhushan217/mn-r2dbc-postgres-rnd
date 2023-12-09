@@ -28,7 +28,7 @@ import static io.micronaut.http.MediaType.APPLICATION_JSON;
 //@Transactional // commented due to browser blocking
 public class ObjectKeyController implements IBaseApi<ObjectKeyVO, Integer, ObjectKey> {
 
-    public static final String BASE_PATH = "/objectKeys";
+    public static final String BASE_PATH = "/api/objectKeys";
     public static final String BASE_TITLE = "Object Keys";
     protected final ObjectKeyRepository objectKeyRepository;
     protected final UiTypeRepository uiTypeRepository;

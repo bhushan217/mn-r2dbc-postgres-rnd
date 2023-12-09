@@ -2,6 +2,7 @@ package com.rukbal.db.aapi;
 
 import com.rukbal.db.domain.BaseRecord;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.exceptions.DataAccessException;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -46,7 +47,7 @@ public interface IBaseApi<V extends BaseRecord<I>, I, E extends BaseRecord<I>> {
     Mono<V> update(@Body @Valid V vo);
 
     @Get(BASE_PATH_LIST)
-    @NonNull Mono<Page<V>> listPage(@Valid Pageable pageable);
+    @NonNull Mono<Page<V>> listPage(@Nullable Pageable pageable);
 
     //    @Post
     Mono<HttpResponse<V>> save(@Body @Valid V vo);

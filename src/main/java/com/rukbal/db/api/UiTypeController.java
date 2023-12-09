@@ -14,7 +14,6 @@ import io.micronaut.http.annotation.Error;
 import io.micronaut.http.annotation.*;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
-import io.micronaut.transaction.annotation.Transactional;
 import io.micronaut.validation.Validated;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -27,17 +26,18 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.rukbal.db.api.UiTypeController.BASE_PATH;
 import static io.micronaut.core.util.CollectionUtils.mapOf;
 import static io.micronaut.http.MediaType.APPLICATION_JSON;
 
-@Controller("/uiTypes")
+@Controller(BASE_PATH)
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @ExecuteOn(TaskExecutors.IO)
 @Validated
-@Transactional
+//@Transactional // commented due to browser blocking
 public class UiTypeController implements IBaseApi<UiTypeVO, Short, UiType> {
-    public static final String BASE_PATH = "/uiTypes";
+    public static final String BASE_PATH = "/api/uiTypes";
     public static final String BASE_TITLE = "UI Types";
     private static final Logger LOG = LoggerFactory.getLogger(UiTypeController.class);
     public static final String NAME_PATH = "/{name}";
@@ -65,7 +65,7 @@ public class UiTypeController implements IBaseApi<UiTypeVO, Short, UiType> {
     }
 
     @Get(BASE_PATH_LIST)
-    public Mono<Page<UiTypeVO>> listPage(@Nullable @Body Pageable pageable) {
+    public Mono<Page<UiTypeVO>> listPage(@Nullable Pageable pageable) {
         return uiTypeRepository.findAll(pageable==null?Pageable.UNPAGED:pageable).map(page -> page.map(this::toVO));
     }
 
