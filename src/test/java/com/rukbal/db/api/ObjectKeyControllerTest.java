@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ObjectKeyControllerTest implements BaseControllerTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectKeyControllerTest.class);
-    private static UiTypeVO uiTypeTextVO = new UiTypeVO((short) 0, "text");
-    private static UiTypeVO uiTypeDateVO = new UiTypeVO((short) 0, "date");
+    private static UiTypeVO uiTypeTextVO = new UiTypeVO((short) 0, "text", "Textbox", "\\W");
+    private static UiTypeVO uiTypeDateVO = new UiTypeVO((short) 0, "date", "Date", "\\d{2}/\\d{2}/\\d{4}");
     private static Integer savedId = -1;
     //    @Client(ObjectKeyController.BASE_PATH)
     private final IBaseApi<ObjectKeyVO, Integer, ObjectKey> objectKeyReactiveClient;
@@ -66,7 +66,7 @@ class ObjectKeyControllerTest implements BaseControllerTest {
     @Test
     @Order(2)
     void save() {
-        var objectKeyVO = new ObjectKeyVO(savedId, "FIRST_NAME", uiTypeTextVO.id());
+        var objectKeyVO = new ObjectKeyVO(savedId, "FIRST_NAME", "First Name", "This is first name", uiTypeTextVO.id());
         var save = objectKeyReactiveClient.save(objectKeyVO);
         var objectKey = requireNonNull(save.block()).body();
         assertNotNull(objectKey);
@@ -93,7 +93,7 @@ class ObjectKeyControllerTest implements BaseControllerTest {
     @Order(4)
     void update() {
 //        save();
-        var updatedRowsMono = objectKeyReactiveClient.update(new ObjectKeyVO(savedId, "LAST_NAME", uiTypeTextVO.id()));
+        var updatedRowsMono = objectKeyReactiveClient.update(new ObjectKeyVO(savedId, "LAST_NAME", "Last Name", "This is last name", uiTypeTextVO.id()));
         var updated = updatedRowsMono.block();
         assertNotNull(updated);
         assertEquals("LAST_NAME", updated.keyName());
@@ -124,11 +124,14 @@ class ObjectKeyControllerTest implements BaseControllerTest {
     @DisplayName("should throw an error on duplicate value DUP_NAME")
     void saveDuplicate() {
         var duplicateKeyName = "DUP_NAME";
-        var save = objectKeyReactiveClient.save(new ObjectKeyVO(-1, duplicateKeyName, uiTypeTextVO.id()));
+        var duplicateLabel = "DUP_NAME";
+        var duplicateDescription = "DUP_NAME";
+        ObjectKeyVO objectKeyVO = new ObjectKeyVO(-1, duplicateKeyName, duplicateLabel, duplicateDescription, uiTypeTextVO.id());
+        var save = objectKeyReactiveClient.save(objectKeyVO);
         var objectKey = requireNonNull(save.block()).body();
         assert objectKey != null;
         assertNotNull(objectKey.id());
-        var save2 = objectKeyReactiveClient.save(new ObjectKeyVO(-1, duplicateKeyName, uiTypeTextVO.id()));
+        var save2 = objectKeyReactiveClient.save(objectKeyVO);
         var thrown = assertThrows(DefaultProblem.class, save2::block);
 
         var message = thrown.getMessage();

@@ -95,11 +95,11 @@ public class UiTypeController implements IBaseApi<UiTypeVO, Short, UiType> {
     }
 
     public UiType toEntity(UiTypeVO uiTypeVO) {
-        return new UiType(uiTypeVO.id(), uiTypeVO.name(), null);
+        return new UiType(uiTypeVO.id(), uiTypeVO.name(), uiTypeVO.description(), uiTypeVO.pattern(), null);
     }
 
     public UiTypeVO toVO(UiType uiType) {
-        return new UiTypeVO(uiType.id(), uiType.name());
+        return new UiTypeVO(uiType.id(), uiType.name(), uiType.description(), uiType.pattern());
     }
 
     @Error(exception = ConstraintViolationException.class)

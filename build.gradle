@@ -13,10 +13,12 @@ repositories {
 }
 
 dependencies {
-    runtimeOnly("ch.qos.logback:logback-classic")
-    compileOnly("io.micronaut:micronaut-http-client")
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    compileOnly("io.micronaut:micronaut-http-client")
+    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.problem:micronaut-problem-json")
 

@@ -1,0 +1,36 @@
+swagger-ui:
+  enabled: true
+
+---
+micronaut:
+  openapi:
+    views:
+      spec: rapidoc.enabled=true
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+    intercept-url-map:
+      - pattern: /swagger/**
+        http-method: GET
+        access:
+          - isAnonymous()
+      - pattern: /swagger-ui/**
+        http-method: GET
+        access:
+          - isAnonymous()
+
+---
+micronaut:
+  security:
+    enabled: false
+    intercept-url-map:
+      -
+        pattern: /swagger-ui/*
+        http-method: GET
+        access:
+          - isAnonymous()
