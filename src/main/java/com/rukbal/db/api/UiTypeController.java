@@ -18,6 +18,7 @@ import io.micronaut.validation.Validated;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -55,13 +56,25 @@ public class UiTypeController implements IBaseApi<UiTypeVO, Short, UiType> {
 
 
     @Override
+    @Get(BASE_PATH_ID)
     public Mono<UiTypeVO> show(Short id) {
-        return null;
+        LOG.info("get ById {}", id);
+        return Mono.just(id)
+                .flatMap(uiTypeRepository::findById)
+                .onErrorMap(this::buildProblemStatement)
+                .map(this::toVO);
     }
 
     @Override
-    public Mono<UiTypeVO> update(UiTypeVO vo) {
-        return null;
+    @Patch(BASE_PATH_ID)
+    public Mono<HttpResponse<UiTypeVO>> update(@NotNull Short id, @Valid @NonNull @Body UiTypeVO uiTypeVO) {
+        LOG.info("updating {}: {}", id, uiTypeVO);
+        return Mono.just(uiTypeVO)
+                .map(this::toEntity)
+                .flatMap(uiTypeRepository::saveElseThrowException)
+                .onErrorMap(this::buildProblemStatement)
+                .map(this::toVO)
+                .map(this::updatedHeadersWithId);
     }
 
     @Get(BASE_PATH_LIST)
@@ -85,8 +98,13 @@ public class UiTypeController implements IBaseApi<UiTypeVO, Short, UiType> {
     }
 
     @Override
-    public Mono<Short> delete(Short id) {
-        return null;
+    @Delete(BASE_PATH_ID)
+    public Mono<Short> delete(@NonNull Short id) {
+        LOG.info("deleting {}", id);
+        return Mono.just(id)
+                .flatMap(uiTypeRepository::deleteById)
+                .map(Long::shortValue)
+                .onErrorMap(this::buildProblemStatement);
     }
 
     @Override
@@ -95,15 +113,16 @@ public class UiTypeController implements IBaseApi<UiTypeVO, Short, UiType> {
     }
 
     public UiType toEntity(UiTypeVO uiTypeVO) {
-        return new UiType(uiTypeVO.id(), uiTypeVO.name(), uiTypeVO.description(), uiTypeVO.pattern(), null);
+        return new UiType(uiTypeVO.id(), uiTypeVO.name(), uiTypeVO.description(), uiTypeVO.pattern(), null, uiTypeVO.version());
     }
 
     public UiTypeVO toVO(UiType uiType) {
-        return new UiTypeVO(uiType.id(), uiType.name(), uiType.description(), uiType.pattern());
+        return new UiTypeVO(uiType.id(), uiType.name(), uiType.description(), uiType.pattern(), uiType.version());
     }
 
     @Error(exception = ConstraintViolationException.class)
     public Map onSaveFailed(HttpRequest<?> request, ConstraintViolationException ex) {
+        LOG.debug("OnSaveFailed");
         var mapSet = ex.getConstraintViolations().stream()
                 .map(cv -> mapOf(cv.getPropertyPath().toString(), cv.getMessage()))
                 .collect(Collectors.toUnmodifiableSet());

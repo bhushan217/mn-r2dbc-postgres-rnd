@@ -23,7 +23,7 @@ public interface UiTypeRepository extends ReactorPageableRepository<UiType, Shor
     @NonNull
     @Transactional
     default Mono<UiType> saveElseThrowException(@NonNull UiType uiType) {
-        return save(uiType)
+        return (uiType.id() > 0 ? update(uiType) : save(uiType))
                 .onErrorMap(Exception.class, e -> {
                     if (e.getMessage().contains("_UK")) {
                         return new DataAccessException("Record " + uiType.name() + " already exists");

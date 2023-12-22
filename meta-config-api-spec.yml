@@ -327,6 +327,7 @@ components:
         uiTypeId:
           type: integer
           format: int32
+      description: Object Key
     Page_BaseRecord_Object__:
       type: object
       allOf:
@@ -483,16 +484,21 @@ components:
       properties:
         id:
           type: integer
+          description: ID
           format: int32
         name:
           maxLength: 15
           minLength: 3
           type: string
+          description: Name of UI Component
         description:
           maxLength: 255
           type: string
+          description: Description of UI Component
           nullable: true
         pattern:
           maxLength: 63
           type: string
+          description: Pattern / Regular Expression
           nullable: true
+      description: UI Component

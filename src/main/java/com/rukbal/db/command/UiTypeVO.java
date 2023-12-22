@@ -32,7 +32,11 @@ public record UiTypeVO(
     @Schema(description="Pattern / Regular Expression")
     @Nullable
     @Size(max = SIZE_S)
-    String pattern
+    String pattern,
+
+    @Schema(description = "Version number")
+    @Nullable
+    Short version
 ) implements BaseRecord<Short> {
 
 }

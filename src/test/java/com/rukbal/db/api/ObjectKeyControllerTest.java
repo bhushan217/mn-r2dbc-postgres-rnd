@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ObjectKeyControllerTest implements BaseControllerTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectKeyControllerTest.class);
-    private static UiTypeVO uiTypeTextVO = new UiTypeVO((short) 0, "text", "Textbox", "\\W");
-    private static UiTypeVO uiTypeDateVO = new UiTypeVO((short) 0, "date", "Date", "\\d{2}/\\d{2}/\\d{4}");
+    private static UiTypeVO uiTypeTextVO = new UiTypeVO((short) 0, "text", "Textbox", "\\W", (short) 0);
+    private static UiTypeVO uiTypeDateVO = new UiTypeVO((short) 0, "date", "Date", "\\d{2}/\\d{2}/\\d{4}", (short) 0);
     private static Integer savedId = -1;
     //    @Client(ObjectKeyController.BASE_PATH)
     private final IBaseApi<ObjectKeyVO, Integer, ObjectKey> objectKeyReactiveClient;
@@ -66,7 +66,7 @@ class ObjectKeyControllerTest implements BaseControllerTest {
     @Test
     @Order(2)
     void save() {
-        var objectKeyVO = new ObjectKeyVO(savedId, "FIRST_NAME", "First Name", "This is first name", uiTypeTextVO.id());
+        var objectKeyVO = new ObjectKeyVO(savedId, "FIRST_NAME", "First Name", "This is first name", uiTypeTextVO.id(), 1);
         var save = objectKeyReactiveClient.save(objectKeyVO);
         var objectKey = requireNonNull(save.block()).body();
         assertNotNull(objectKey);
@@ -93,10 +93,10 @@ class ObjectKeyControllerTest implements BaseControllerTest {
     @Order(4)
     void update() {
 //        save();
-        var updatedRowsMono = objectKeyReactiveClient.update(new ObjectKeyVO(savedId, "LAST_NAME", "Last Name", "This is last name", uiTypeTextVO.id()));
+        var updatedRowsMono = objectKeyReactiveClient.update(savedId, new ObjectKeyVO(savedId, "LAST_NAME", "Last Name", "This is last name", uiTypeTextVO.id(), 0));
         var updated = updatedRowsMono.block();
         assertNotNull(updated);
-        assertEquals("LAST_NAME", updated.keyName());
+        assertEquals("LAST_NAME", updated.body().keyName());
     }
 
     @Test
@@ -126,7 +126,7 @@ class ObjectKeyControllerTest implements BaseControllerTest {
         var duplicateKeyName = "DUP_NAME";
         var duplicateLabel = "DUP_NAME";
         var duplicateDescription = "DUP_NAME";
-        ObjectKeyVO objectKeyVO = new ObjectKeyVO(-1, duplicateKeyName, duplicateLabel, duplicateDescription, uiTypeTextVO.id());
+        ObjectKeyVO objectKeyVO = new ObjectKeyVO(-1, duplicateKeyName, duplicateLabel, duplicateDescription, uiTypeTextVO.id(), 1);
         var save = objectKeyReactiveClient.save(objectKeyVO);
         var objectKey = requireNonNull(save.block()).body();
         assert objectKey != null;

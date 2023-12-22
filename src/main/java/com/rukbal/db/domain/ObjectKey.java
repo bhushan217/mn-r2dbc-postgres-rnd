@@ -1,6 +1,5 @@
 package com.rukbal.db.domain;
 
-import com.rukbal.db.utils.CommonConst;
 import io.micronaut.core.annotation.Indexed;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
@@ -42,6 +41,10 @@ public record ObjectKey(
         @Size(max = SIZE_XS)
         @Relation(ONE_TO_ONE)
         @JoinColumn(name = "ui_type_id")
-        UiType uiType
+        UiType uiType,
+
+        @Version
+//        @AutoPopulated
+        Integer version
 ) implements BaseRecord<Integer> {
 }

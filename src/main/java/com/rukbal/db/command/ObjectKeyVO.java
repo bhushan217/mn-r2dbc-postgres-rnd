@@ -11,11 +11,11 @@ import jakarta.validation.constraints.Size;
 
 import static com.rukbal.db.utils.CommonConst.*;
 
-@Schema(name="ObjectKeyVO", description="Object Key")
+@Schema(name = "ObjectKeyVO", description = "Object Key")
 @Serdeable
 public record ObjectKeyVO(
         @Nullable
-    Integer id,
+        Integer id,
 
         @NotBlank @NonNull
         @Size(max = SIZE_S)
@@ -29,7 +29,10 @@ public record ObjectKeyVO(
         String description,
 
         @NotNull
-        Short uiTypeId
+        Short uiTypeId,
+
+        @Nullable
+        Integer version
 ) implements BaseRecord<Integer> {
 
 }

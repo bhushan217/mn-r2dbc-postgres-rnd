@@ -1,6 +1,5 @@
 package com.rukbal.db.domain;
 
-import com.rukbal.db.utils.CommonConst;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.*;
@@ -33,6 +32,10 @@ public record UiType(
 
     @Nullable
     @Relation(value = Relation.Kind.ONE_TO_MANY, mappedBy = "uiType"/*, cascade = {Relation.Cascade.UPDATE}*/)
-    Set<ObjectKey> objectKeys
+    Set<ObjectKey> objectKeys,
+
+    @Version
+//    @AutoPopulated
+    Short version
 ) implements BaseRecord<Short> {
 }

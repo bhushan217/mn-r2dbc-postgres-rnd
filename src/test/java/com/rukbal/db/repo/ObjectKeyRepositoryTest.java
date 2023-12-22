@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(startApplication = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestClassOrder(ClassOrderer.class)
+// @TestClassOrder(ClassOrderer.class)
 class ObjectKeyRepositoryTest {
 
     private final ObjectKeyRepository objectKeyRepository;
@@ -23,14 +23,14 @@ class ObjectKeyRepositoryTest {
         this.objectKeyRepository = objectKeyRepository;
     }
 
-    UiType uiTypeText = new UiType((short) 1, "text", "Textbox", "\\W", null);
+    UiType uiTypeText = new UiType((short) 1, "text", "Textbox", "\\W", null, (short) 1);
     java.util.List<ObjectKey> objectKeys = Arrays.asList(
-            new ObjectKey(1, "FIRST_NAME", "FIRST_NAME", "FIRST_NAME",uiTypeText),
-            new ObjectKey(2, "LAST_NAME", "LAST_NAME", "LAST_NAME",uiTypeText),
-            new ObjectKey(3, "MIDDLE_NAME", "MIDDLE_NAME", "MIDDLE_NAME",uiTypeText),
-            new ObjectKey(4, "PREFIX_NAME", "PREFIX_NAME", "PREFIX_NAME",uiTypeText),
-            new ObjectKey(5, "DATE_OF_BIRTH", "DATE_OF_BIRTH", "DATE_OF_BIRTH",uiTypeText),
-            new ObjectKey(6, "DATE_OF_JOIN", "DATE_OF_JOIN", "DATE_OF_JOIN",uiTypeText));
+            new ObjectKey(1, "FIRST_NAME", "FIRST_NAME", "FIRST_NAME", uiTypeText, 1),
+            new ObjectKey(2, "LAST_NAME", "LAST_NAME", "LAST_NAME", uiTypeText, 1),
+            new ObjectKey(3, "MIDDLE_NAME", "MIDDLE_NAME", "MIDDLE_NAME", uiTypeText, 1),
+            new ObjectKey(4, "PREFIX_NAME", "PREFIX_NAME", "PREFIX_NAME", uiTypeText, 1),
+            new ObjectKey(5, "DATE_OF_BIRTH", "DATE_OF_BIRTH", "DATE_OF_BIRTH", uiTypeText, 1),
+            new ObjectKey(6, "DATE_OF_JOIN", "DATE_OF_JOIN", "DATE_OF_JOIN", uiTypeText, 1));
     @BeforeEach
     void setUp() {
         objectKeyRepository.deleteAll().block();

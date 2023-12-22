@@ -8,10 +8,7 @@ import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Delete;
-import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.*;
 import io.micronaut.http.uri.UriBuilder;
 import io.micronaut.problem.HttpStatusType;
 import jakarta.validation.Valid;
@@ -43,8 +40,8 @@ public interface IBaseApi<V extends BaseRecord<I>, I, E extends BaseRecord<I>> {
     @Get(BASE_PATH_ID)
     Mono<V> show(@NotNull I id);
 
-    //    @Put
-    Mono<V> update(@Body @Valid V vo);
+    @Patch(BASE_PATH_ID)
+    Mono<HttpResponse<V>> update(@NotNull I id, @Body @NonNull @Valid V vo);
 
     @Get(BASE_PATH_LIST)
     @NonNull Mono<Page<V>> listPage(@Nullable Pageable pageable);
@@ -79,5 +76,9 @@ public interface IBaseApi<V extends BaseRecord<I>, I, E extends BaseRecord<I>> {
 
     default HttpResponse<V> createdHeadersWithId(V vo) {
         return HttpResponse.created(vo).headers(headers -> headers.location(location(vo.id())));
+    }
+
+    default HttpResponse<V> updatedHeadersWithId(V vo) {
+        return HttpResponse.ok(vo).headers(headers -> headers.location(location(vo.id())));
     }
 }
