@@ -21,4 +21,6 @@ curl -d '{"id":3, "keyName":"FIRST_NAME", "uiType":"text"}' -H "Content-Type: ap
 #### DELETE - update
 curl -X DELETE http://localhost:8087/objectKeys/3
 
+### docker
 
+Run `docker compose up`

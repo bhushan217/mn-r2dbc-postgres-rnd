@@ -19,6 +19,8 @@ dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     runtimeOnly("ch.qos.logback:logback-classic")
+    implementation "io.micronaut.security:micronaut-security"
+    runtimeOnly "io.micronaut.security:micronaut-security-jwt"
     compileOnly("io.micronaut:micronaut-http-client")
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
@@ -56,6 +58,9 @@ tasks {
             image = "gcr.io/myapp/jib-image"
         }
     }
+    dockerBuild {
+        images = ["bhushan217/mn-r2dbc-ui-config-service:$project.version"]
+    }
 }
 graalvmNative.toolchainDetection = false
 micronaut {
@@ -77,6 +82,13 @@ micronaut {
         optimizeNetty = true
     }
 }
-
+//tasks.named("dockerBuild") {
+//    images = ["bhushan217/mn-r2dbc-ui-config-service:$project.version"]
+//}
+run {
+    systemProperties([
+            'micronaut.environments': 'dev'
+    ])
+}
 
 

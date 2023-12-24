@@ -1,0 +1,24 @@
+micronaut:
+  application:
+    name: mn-r2dbc-postgres-rnd
+  config-client:
+    enabled: true
+
+kubernetes:
+  client:
+    discovery:
+      mode: service
+      labels:
+        - app: mn-r2dbc-postgres-rnd
+        - env: dev
+    secrets:
+      enabled: true
+      use-api: true
+      excludes: mounted-secret
+      paths:
+        - /etc/mn-r2dbc-postgres-rnd/secrets
+    config-maps:
+      use-api: true
+      excludes: mounted-configmap
+      paths:
+        - /etc/mn-r2dbc-postgres-rnd/configmap

@@ -12,6 +12,7 @@ import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
+import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.validation.Validated;
@@ -33,6 +34,7 @@ import static io.micronaut.http.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 @ExecuteOn(TaskExecutors.IO)
 @Validated
+@Refreshable
 //@Transactional // commented due to browser blocking
 public class ObjectKeyController implements IBaseApi<ObjectKeyVO, Integer, ObjectKey> {
     private static final Logger LOG = LoggerFactory.getLogger(ObjectKeyController.class);

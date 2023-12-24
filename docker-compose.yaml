@@ -1,0 +1,67 @@
+version: "3.8"
+services:
+
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-db-1
+    ports:
+      - "5438:5432"
+    networks:
+      - ruk-bal-nw
+    volumes:
+      - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+      - "db-data:/var/lib/postgresql/data"
+      - "./postgresql:/docker-entrypoint-initdb.d"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRESQL_DB_CATALOG}
+      - POSTGRES_USER=${POSTGRESQL_DB_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_DB_PASSWORD}
+
+  mn-r2dbc-ui-config-service:
+    image: bhushan217/mn-r2dbc-ui-config-service
+    container_name: mn-r2dbc-ui-config-service-8087
+    ports:
+      - "8087:8087"
+    links:
+      - postgres-db
+    networks:
+      - ruk-bal-nw
+    #    volumes:
+    env_file:
+      - .env
+    environment:
+      - POSTGRESQL_DB_SCHEMA=${POSTGRESQL_DB_SCHEMA}
+      - POSTGRESQL_DB_URL=postgresql://$${POSTGRESQL_DB_HOST}:$${POSTGRESQL_DB_PORT}/$${POSTGRESQL_DB_CATALOG}
+      - POSTGRESQL_DB_USER=${POSTGRESQL_DB_USER}
+      - POSTGRESQL_DB_PASSWORD=${POSTGRESQL_DB_PASSWORD}
+      - micronaut.environments=$${MICRONAUT_ENVIRONMENTS}
+
+  nginx-web:
+    #    image: nginx:alpine
+    image: bhushan217/demo-ang17
+    container_name: reverse_proxy
+    depends_on:
+      - mn-r2dbc-ui-config-service
+    ports:
+      - "80:80"
+    networks:
+      - ruk-bal-nw
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+#      - type: volume
+#        source: web-data
+#        target: /data
+#        volume:
+#          nocopy: true
+#      - type: bind
+#        source: ./static
+#        target: /opt/app/static
+volumes:
+  web-data: { }
+  db-data: { }
+
+networks:
+  ruk-bal-nw:
+    driver: bridge
